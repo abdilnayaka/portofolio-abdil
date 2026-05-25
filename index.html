@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abdil | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="glow-bg glow-1"></div>
+    <div class="glow-bg glow-2"></div>
+
+    <nav class="navbar">
+        <div class="logo">Portfolio<span>.</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-content animate-on-scroll">
+            <h1>Hi, I am <span class="highlight">Abdil</span></h1>
+            <h2 id="typing-text"></h2>
+            <p>Crafting modern user interfaces and robust backend architectures with fine precision.</p>
+            <a href="#projects" class="btn">Explore My Work</a>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container animate-on-scroll">
+            <h2 class="section-title">About Me</h2>
+            <div class="glass-card about-card">
+                <p>
+    Highly motivated Informatics student specializing in Fullstack Development, Artificial Intelligence, and scalable backend systems. Adept at building microservices architectures and integrating Generative AI into robust web applications. Passionate about continuous learning, algorithmic problem-solving, and currently seeking Software Engineering internship opportunities to drive impactful technical solutions               
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="skills">
+        <div class="container animate-on-scroll">
+            <h2 class="section-title">Skills & Technologies</h2>
+            <div class="skills-grid">
+                <div class="glass-card skill-card">
+                    <h3>Programming Languages</h3>
+                    <p>Java, Golang, Python, JavaScript/TypeScript, SQL</p>
+                </div>
+                <div class="glass-card skill-card">
+                    <h3>Frameworks & Libraries</h3>
+                    <p>Spring Boot, Next.js, React, Gin, Tailwind CSS</p>
+                </div>
+                <div class="glass-card skill-card">
+                    <h3>Databases & Tools</h3>
+                    <p>MongoDB, PostgreSQL, Git, Docker, REST APIs, GORM, Hibernate/JPA</p>
+                </div>
+                <div class="glass-card skill-card">
+                    <h3>Languages (Spoken)</h3>
+                    <p>Indonesian (Native), English (Professional Working Proficiency)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="projects">
+        <div class="container animate-on-scroll">
+            <h2 class="section-title">Recent Projects</h2>
+            <div class="project-grid">
+                <div class="glass-card project-card">
+                    <h3>Digital Payment Gateway API</h3>
+                    <div class="project-tech">Java 17, Spring Boot, PostgreSQL, Spring Data JPA</div>
+                    <p>Developed a secure RESTful API simulation of a digital payment gateway transaction lifecycle using Java and Spring Boot. Built upon a 3-Tier Layered Architecture, the backend application automates transaction status handling, enforces strict inbound data rules through DTO validation, manages data persistence via PostgreSQL, and utilizes a centralized Global Exception Handler to ensure clean, standardized client-ready JSON error responses</p>
+                    <a href="https://github.com/abdilnayaka/payment-gateway-API" class="project-link">View Details</a>
+                </div>
+                <div class="glass-card project-card">
+                    <h3>hirint (AI-Powered Applicant Tracking System)</h3>
+                    <div class="project-tech">Golang, Gin, GORM, Next.js, Tailwind CSS, Python, PostgreSQL, Google Gemini API</div>
+                    <p>Smart ATS is an AI-powered recruitment platform built with a scalable Monorepo architecture, featuring a robust Golang-Gin backend, a Python-based NLP microservice, and a modern Next.js frontend. The system streamlines the hiring process by leveraging the Google Gemini API for intelligent resume parsing, skill-set analysis, and dynamic candidate-job matching, while providing HR professionals with real-time application tracking and applicants with a seamless, intuitive experience </p>
+                    <a href="https://github.com/abdilnayaka/hirint-smart-ats-jobseeker" class="project-link">View Details</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container animate-on-scroll">
+            <h2 class="section-title">Let's Work Together</h2>
+            <p class="contact-desc">Interested in collaborating on a project or exploring new technical opportunities?</p>
+            
+            <!-- Kotak Email -->
+            <div class="glass-card contact-info">
+                <p>Drop me an email at:</p>
+                <a href="mailto:emailanda@example.com" class="email-text">abdilnayakanr@gmail.com</a>
+            </div>
+
+            <!-- Tombol Aksi -->
+            <div class="contact-buttons">
+                <a href="mailto:abdilnayakanr@gmail.com" class="btn">Send Email</a>
+                <!-- Pastikan nama file "cv-abdil.pdf" sesuai dengan nama file CV asli Anda di dalam folder -->
+                <a href="CV Abdil Nayaka Rizky.pdf" download="CV Abdil Nayaka Rizky.pdf" class="btn btn-outline">Download CV</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Abdil. Powered by pure HTML, CSS, and JavaScript.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

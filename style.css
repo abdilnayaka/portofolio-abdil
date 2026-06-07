@@ -242,8 +242,8 @@ section {
 /* Custom Projects Section Layout */
 .project-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(2, 1fr); /* Maksimal 2 item berjejer */
+    gap: 2rem;
 }
 
 .project-card {

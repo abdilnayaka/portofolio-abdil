@@ -1,101 +1,1687 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abdil | Portfolio</title>
 
     <link rel="icon" type="image/png" href="logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           1. DESIGN TOKENS & THEME VARIABLES
+           ========================================================================== */
+        :root {
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Dark Mode Default */
+            --bg-primary: #07080d;
+            --bg-elevated: #0d1019;
+            --surface: rgba(17, 20, 32, 0.68);
+            --surface-solid: #111420;
+            --surface-hover: rgba(24, 29, 46, 0.85);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.16);
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --accent-1: #6366f1; /* Indigo */
+            --accent-2: #06b6d4; /* Cyan */
+            --accent-3: #8b5cf6; /* Violet */
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+            --spotlight: rgba(99, 102, 241, 0.2);
+            --dot-color: rgba(255, 255, 255, 0.055);
+            --nav-bg: rgba(7, 8, 13, 0.72);
+            --shadow-card: 0 24px 48px -18px rgba(0, 0, 0, 0.55);
+            --glow-opacity: 0.22;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-elevated: #ffffff;
+            --surface: rgba(255, 255, 255, 0.78);
+            --surface-solid: #ffffff;
+            --surface-hover: rgba(255, 255, 255, 0.96);
+            --border: rgba(15, 23, 42, 0.08);
+            --border-strong: rgba(15, 23, 42, 0.16);
+
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+
+            --accent-1: #4f46e5;
+            --accent-2: #0891b2;
+            --accent-3: #7c3aed;
+            --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
+            --spotlight: rgba(79, 70, 229, 0.12);
+            --dot-color: rgba(15, 23, 42, 0.06);
+            --nav-bg: rgba(248, 250, 252, 0.78);
+            --shadow-card: 0 24px 48px -18px rgba(15, 23, 42, 0.09);
+            --glow-opacity: 0.14;
+        }
+
+        /* ==========================================================================
+           2. RESET & BASE STYLES
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            transition: background-color 0.35s ease, color 0.35s ease;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+        }
+
+        /* Subtle faint dot-grid overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        ::selection {
+            background: rgba(99, 102, 241, 0.32);
+            color: var(--text-primary);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
+
+        /* ==========================================================================
+           3. AMBIENT GLOW ORBS & SCROLL PROGRESS BAR
+           ========================================================================== */
+        .glow-bg {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(110px);
+            opacity: var(--glow-opacity);
+            pointer-events: none;
+            z-index: 0;
+            will-change: transform;
+            transition: opacity 0.4s ease;
+        }
+
+        .glow-1 {
+            width: 520px;
+            height: 520px;
+            top: -120px;
+            left: -100px;
+            background: radial-gradient(circle, var(--accent-1) 0%, transparent 70%);
+            animation: driftOne 18s ease-in-out infinite alternate;
+        }
+
+        .glow-2 {
+            width: 560px;
+            height: 560px;
+            bottom: -140px;
+            right: -120px;
+            background: radial-gradient(circle, var(--accent-2) 0%, transparent 70%);
+            animation: driftTwo 22s ease-in-out infinite alternate;
+        }
+
+        @keyframes driftOne {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(70px, 50px) scale(1.1); }
+        }
+
+        @keyframes driftTwo {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-70px, -55px) scale(1.08); }
+        }
+
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: var(--accent-gradient);
+            z-index: 1100;
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.55);
+            transition: width 0.08s linear;
+        }
+
+        /* ==========================================================================
+           4. STICKY GLASSMORPHIC NAVBAR
+           ========================================================================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 950;
+            background: var(--nav-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0.9rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            user-select: none;
+        }
+
+        .logo span {
+            color: var(--accent-2);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .nav-links li a {
+            display: inline-block;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-radius: 999px;
+            transition: color 0.25s ease, background-color 0.25s ease;
+        }
+
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: var(--text-primary);
+            background: rgba(99, 102, 241, 0.14);
+        }
+
+        .nav-utilities {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cmd-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.42rem 0.72rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .cmd-trigger:hover {
+            border-color: var(--accent-1);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--accent-2);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .hamburger {
+            display: none;
+        }
+
+        /* ==========================================================================
+           5. SHARED LAYOUT, GLASS CARDS & MAGNETIC BUTTONS
+           ========================================================================== */
+        section {
+            position: relative;
+            z-index: 2;
+            padding: 6.5rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: clamp(1.9rem, 3.6vw, 2.55rem);
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            text-align: center;
+            margin-bottom: 2.75rem;
+            color: var(--text-primary);
+        }
+
+        .glass-card {
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 2rem;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+            transition: border-color 0.3s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
+        }
+
+        /* Cursor-tracking radial spotlight border/surface glow */
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(
+                520px circle at var(--mx, 50%) var(--my, 50%),
+                var(--spotlight),
+                transparent 42%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        .glass-card:hover {
+            border-color: var(--border-strong);
+        }
+
+        .glass-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Magnetic Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.82rem 1.55rem;
+            border-radius: 13px;
+            font-size: 0.93rem;
+            font-weight: 600;
+            background: var(--accent-gradient);
+            color: #ffffff;
+            box-shadow: 0 10px 26px -8px rgba(99, 102, 241, 0.55);
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+            will-change: transform;
+        }
+
+        .btn:hover {
+            box-shadow: 0 14px 32px -6px rgba(99, 102, 241, 0.7);
+        }
+
+        .btn-outline {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-strong);
+            box-shadow: none;
+            backdrop-filter: blur(12px);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent-2);
+            background: var(--surface-hover);
+            box-shadow: 0 10px 24px -10px rgba(6, 182, 212, 0.35);
+        }
+
+        .btn-sm {
+            padding: 0.55rem 1rem;
+            font-size: 0.83rem;
+            border-radius: 10px;
+        }
+
+        /* Scroll Reveal */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================================================================
+           6. HERO SECTION
+           ========================================================================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: 6rem;
+        }
+
+        .hero-content {
+            max-width: 780px;
+            margin: 0 auto;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.44rem 1.05rem;
+            border-radius: 999px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 1.75rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulseGreen 2s infinite;
+        }
+
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.65); }
+            70% { box-shadow: 0 0 0 9px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.65rem, 6.2vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.035em;
+            margin-bottom: 1rem;
+        }
+
+        .highlight {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .typing-wrap {
+            min-height: 2.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.35rem;
+        }
+
+        #typing-text {
+            font-family: var(--font-mono);
+            font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+            font-weight: 500;
+            color: var(--accent-2);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        #typing-text::after {
+            content: "";
+            display: inline-block;
+            width: 2px;
+            height: 1.15em;
+            background: var(--accent-2);
+            margin-left: 5px;
+            animation: blinkCursor 0.9s infinite;
+        }
+
+        @keyframes blinkCursor {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 1.8vw, 1.16rem);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2.3rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.95rem;
+        }
+
+        /* ==========================================================================
+           7. ABOUT ME SECTION (PROSE / JSON FLIP)
+           ========================================================================== */
+        .about-card {
+            max-width: 880px;
+            margin: 0 auto;
+        }
+
+        .about-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.35rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .about-badge {
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: var(--accent-2);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .json-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.42rem 0.85rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-strong);
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .json-toggle-btn:hover {
+            border-color: var(--accent-2);
+            background: rgba(6, 182, 212, 0.16);
+        }
+
+        .about-view {
+            transition: opacity 0.28s ease, transform 0.28s ease;
+        }
+
+        .about-view.hidden {
+            display: none;
+        }
+
+        .about-prose {
+            font-size: 1.07rem;
+            color: var(--text-secondary);
+            line-height: 1.85;
+        }
+
+        .json-pre {
+            font-family: var(--font-mono);
+            font-size: 0.84rem;
+            line-height: 1.75;
+            background: rgba(5, 7, 14, 0.78);
+            color: #e2e8f0;
+            padding: 1.35rem;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .tok-key { color: #93c5fd; }
+        .tok-str { color: #a7f3d0; }
+        .tok-bool { color: #fbbf24; }
+        .tok-punc { color: #94a3b8; }
+
+        .focus-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            margin-top: 1.75rem;
+            padding-top: 1.35rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .focus-pill {
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            padding: 0.42rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.24);
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .focus-pill::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-2);
+        }
+
+        /* ==========================================================================
+           8. SKILLS & TECHNOLOGIES (2x2 INTERACTIVE GRID)
+           ========================================================================== */
+        .skills-hint {
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: -1.75rem;
+            margin-bottom: 2.25rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.35rem;
+        }
+
+        .skill-card h3 {
+            font-size: 1.12rem;
+            font-weight: 600;
+            margin-bottom: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .skill-card h3 .cat-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 3px;
+            background: var(--accent-gradient);
+        }
+
+        .skill-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+        }
+
+        .skill-pill {
+            font-family: var(--font-mono);
+            font-size: 0.79rem;
+            padding: 0.44rem 0.85rem;
+            border-radius: 10px;
+            background: rgba(148, 163, 184, 0.09);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .skill-pill:hover {
+            border-color: var(--accent-2);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .skill-pill.active-skill {
+            background: var(--accent-gradient);
+            border-color: transparent;
+            color: #ffffff;
+            box-shadow: 0 6px 18px -5px rgba(99, 102, 241, 0.55);
+        }
+
+        /* ==========================================================================
+           9. RECENT PROJECTS SECTION
+           ========================================================================== */
+        .project-filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            margin-bottom: 2.25rem;
+        }
+
+        .filter-pill {
+            padding: 0.52rem 1.1rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transition: all 0.22s ease;
+        }
+
+        .filter-pill:hover {
+            border-color: var(--border-strong);
+            color: var(--text-primary);
+        }
+
+        .filter-pill.active {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.5);
+        }
+
+        .skill-match-banner {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.75rem;
+            padding: 0.65rem 1.15rem;
+            border-radius: 12px;
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .skill-match-banner.visible {
+            display: flex;
+        }
+
+        .clear-skill-btn {
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent-2);
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.45rem;
+        }
+
+        .project-card {
+            display: flex;
+            flex-direction: column;
+            padding: 1.75rem;
+        }
+
+        .project-card.hidden-project {
+            display: none;
+        }
+
+        .project-card.skill-matched {
+            border-color: var(--accent-2);
+            box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.4), 0 24px 48px -16px rgba(6, 182, 212, 0.22);
+        }
+
+        .project-card.skill-dimmed {
+            opacity: 0.42;
+        }
+
+        .project-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .project-card h3 {
+            font-size: 1.14rem;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .project-category-tag {
+            font-family: var(--font-mono);
+            font-size: 0.66rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.22rem 0.55rem;
+            border-radius: 6px;
+            background: rgba(99, 102, 241, 0.14);
+            color: var(--accent-2);
+            white-space: nowrap;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.38rem;
+            margin-bottom: 1.1rem;
+        }
+
+        .tech-tag {
+            font-family: var(--font-mono);
+            font-size: 0.69rem;
+            padding: 0.22rem 0.55rem;
+            border-radius: 6px;
+            background: rgba(6, 182, 212, 0.09);
+            border: 1px solid rgba(6, 182, 212, 0.22);
+            color: var(--accent-2);
+        }
+
+        .project-card p {
+            font-size: 0.89rem;
+            color: var(--text-secondary);
+            line-height: 1.72;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .project-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: auto;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .project-link {
+            flex: 1;
+            min-width: 115px;
+        }
+
+        .demo-btn {
+            flex: 1;
+            min-width: 130px;
+        }
+
+        /* ==========================================================================
+           10. CONTACT SECTION & FOOTER
+           ========================================================================== */
+        .contact {
+            text-align: center;
+            padding-bottom: 4.5rem;
+        }
+
+        .contact-desc {
+            color: var(--text-secondary);
+            max-width: 520px;
+            margin: -1.5rem auto 2.25rem;
+            font-size: 1rem;
+        }
+
+        .contact-info {
+            max-width: 560px;
+            margin: 0 auto 1.75rem;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .contact-info p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .email-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .email-text {
+            font-family: var(--font-mono);
+            font-size: clamp(0.95rem, 2.5vw, 1.18rem);
+            font-weight: 600;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .copy-email-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 0.85rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-strong);
+            background: rgba(148, 163, 184, 0.08);
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .copy-email-btn:hover {
+            border-color: var(--accent-2);
+            background: rgba(6, 182, 212, 0.14);
+        }
+
+        .copy-email-btn.copied {
+            border-color: #10b981;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.12);
+        }
+
+        .contact-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.85rem;
+        }
+
+        footer {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem 1.5rem 2.75rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.86rem;
+            color: var(--text-muted);
+        }
+
+        /* ==========================================================================
+           11. GLASSMORPHIC MODALS (COMMAND PALETTE & INTERACTIVE PROJECT DEMOS)
+           ========================================================================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 6, 12, 0.74);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 640px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--surface-solid);
+            border: 1px solid var(--border-strong);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.65);
+            animation: modalPop 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid var(--border);
+            gap: 1rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.02rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            background: rgba(148, 163, 184, 0.12);
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .modal-body {
+            padding: 1.35rem 1.4rem;
+            overflow-y: auto;
+        }
+
+        /* Command Palette Specific */
+        .cmd-box {
+            max-width: 540px;
+        }
+
+        .cmd-search-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cmd-search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.96rem;
+        }
+
+        .kbd-chip {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            padding: 0.18rem 0.48rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-strong);
+            color: var(--text-muted);
+        }
+
+        .cmd-list {
+            max-height: 340px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .cmd-item {
+            width: 100%;
+            text-align: left;
+            padding: 0.72rem 0.9rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.89rem;
+            color: var(--text-secondary);
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .cmd-item:hover,
+        .cmd-item.selected {
+            background: rgba(99, 102, 241, 0.16);
+            color: var(--text-primary);
+        }
+
+        .cmd-tag {
+            font-family: var(--font-mono);
+            font-size: 0.69rem;
+            color: var(--accent-2);
+        }
+
+        /* Interactive Demo Shared Styles */
+        .demo-endpoint-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            padding: 0.65rem 0.9rem;
+            border-radius: 12px;
+            background: rgba(148, 163, 184, 0.08);
+            border: 1px solid var(--border);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .http-method {
+            padding: 0.18rem 0.5rem;
+            border-radius: 6px;
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+            font-weight: 600;
+            margin-right: 0.45rem;
+        }
+
+        .demo-toggle-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .demo-seg-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 0.55rem 0.85rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: rgba(148, 163, 184, 0.06);
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .demo-seg-btn.active {
+            border-color: var(--accent-2);
+            background: rgba(6, 182, 212, 0.14);
+            color: var(--text-primary);
+        }
+
+        .pipeline-steps {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.4rem;
+            margin: 1.1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .pipe-node {
+            flex: 1;
+            min-width: 105px;
+            text-align: center;
+            padding: 0.55rem 0.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: rgba(148, 163, 184, 0.06);
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            transition: all 0.28s ease;
+        }
+
+        .pipe-node.running {
+            border-color: var(--accent-2);
+            color: var(--accent-2);
+            background: rgba(6, 182, 212, 0.14);
+            transform: translateY(-2px);
+        }
+
+        .pipe-node.success {
+            border-color: #10b981;
+            color: #34d399;
+            background: rgba(16, 185, 129, 0.14);
+        }
+
+        .pipe-node.error {
+            border-color: #ef4444;
+            color: #f87171;
+            background: rgba(239, 68, 68, 0.14);
+        }
+
+        .pipe-arrow {
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        .demo-console {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            line-height: 1.65;
+            background: #070910;
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            margin-top: 0.85rem;
+        }
+
+        /* ATS Score Meter */
+        .ats-result-card {
+            margin-top: 1rem;
+            padding: 1.1rem;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: rgba(148, 163, 184, 0.05);
+            display: none;
+        }
+
+        .ats-result-card.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .ats-score-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.55rem;
+        }
+
+        .ats-bar-bg {
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.18);
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .ats-bar-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 999px;
+            background: var(--accent-gradient);
+            transition: width 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* HCIS Mini-Dashboard */
+        .hcis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .hcis-stat {
+            padding: 0.9rem 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(148, 163, 184, 0.06);
+        }
+
+        .hcis-stat-label {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .hcis-stat-val {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--accent-2);
+        }
+
+        .hcis-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .hcis-input {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.58rem 0.75rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-strong);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .hcis-queue-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            padding: 0.75rem 0.9rem;
+            border-radius: 11px;
+            border: 1px solid var(--border);
+            background: rgba(148, 163, 184, 0.05);
+            margin-bottom: 0.55rem;
+            font-size: 0.83rem;
+        }
+
+        .status-tag {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            padding: 0.18rem 0.5rem;
+            border-radius: 6px;
+        }
+
+        .status-pending { background: rgba(245, 158, 11, 0.16); color: #fbbf24; }
+        .status-approved { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+        .status-rejected { background: rgba(239, 68, 68, 0.16); color: #f87171; }
+
+        /* ==========================================================================
+           12. FLOATING TOAST NOTIFICATION
+           ========================================================================== */
+        #toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 1500;
+            padding: 0.82rem 1.25rem;
+            border-radius: 13px;
+            background: var(--surface-solid);
+            border: 1px solid var(--accent-2);
+            color: var(--text-primary);
+            font-size: 0.86rem;
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            opacity: 0;
+            transform: translateY(16px);
+            pointer-events: none;
+            transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================================================================
+           13. RESPONSIVE BREAKPOINTS
+           ========================================================================== */
+        @media (max-width: 980px) {
+            .project-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 5.25rem 1.15rem;
+            }
+
+            .hamburger {
+                display: inline-flex;
+            }
+
+            .cmd-text {
+                display: none;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 66px;
+                left: 0;
+                width: 100%;
+                flex-direction: column;
+                background: var(--surface-solid);
+                border-bottom: 1px solid var(--border);
+                padding: 1rem 1.5rem 1.5rem;
+                gap: 0.35rem;
+                transform: translateY(-130%);
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            }
+
+            .nav-links.open {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .nav-links li {
+                width: 100%;
+            }
+
+            .nav-links li a {
+                width: 100%;
+                padding: 0.72rem 1rem;
+            }
+
+            .skills-grid,
+            .project-grid,
+            .hcis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pipe-arrow {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <div class="glow-bg glow-1"></div>
-    <div class="glow-bg glow-2"></div>
+    <!-- Scroll Progress Indicator -->
+    <div id="scroll-progress" aria-hidden="true"></div>
 
+    <!-- Dual Ambient Glow Orbs -->
+    <div class="glow-bg glow-1" aria-hidden="true"></div>
+    <div class="glow-bg glow-2" aria-hidden="true"></div>
+
+    <!-- Sticky Glassmorphic Navbar -->
     <nav class="navbar">
-        <div class="logo">Portfolio<span>.</span></div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+        <div class="nav-inner">
+            <a href="#home" class="logo">Portfolio<span>.</span></a>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+
+            <div class="nav-utilities">
+                <button type="button" class="cmd-trigger" id="open-cmd-btn" aria-label="Open Command Palette" title="Command Palette (Ctrl+K)">
+                    <span>⌘K</span>
+                    <span class="cmd-text">Quick Menu</span>
+                </button>
+
+                <button type="button" class="icon-btn" id="theme-toggle" aria-label="Toggle Dark or Light Theme" title="Toggle Theme">
+                    <svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+
+                <button type="button" class="icon-btn hamburger" id="hamburger-btn" aria-label="Toggle Navigation Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
     </nav>
 
+    <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content animate-on-scroll">
+            <div class="status-pill">
+                <span class="pulse-dot"></span>
+                <span>Available for Software Engineering Internships</span>
+            </div>
+
             <h1>Hi, I am <span class="highlight">Abdil</span></h1>
-            <h2 id="typing-text"></h2>
+
+            <div class="typing-wrap">
+                <h2 id="typing-text" aria-live="polite"></h2>
+            </div>
+
             <p>Crafting modern user interfaces and robust backend architectures with fine precision.</p>
-            
-            <!-- Tambahan: Container untuk dua tombol berdampingan -->
+
             <div class="hero-buttons">
-                <a href="#projects" class="btn">Explore My Work</a>
-                <a href="CV Abdil Nayaka Rizky.pdf" download="CV Abdil Nayaka Rizky.pdf" class="btn btn-outline">Download CV</a>
+                <a href="#projects" class="btn magnetic">
+                    Explore My Work
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+                <a href="CV Abdil Nayaka Rizky.pdf" download="CV Abdil Nayaka Rizky.pdf" class="btn btn-outline magnetic">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Download CV
+                </a>
             </div>
         </div>
     </section>
 
+    <!-- About Me Section -->
     <section id="about" class="about">
         <div class="container animate-on-scroll">
             <h2 class="section-title">About Me</h2>
+
             <div class="glass-card about-card">
-                <p>
-    Highly motivated Informatics student specializing in Fullstack Development, Artificial Intelligence, and scalable backend systems. Adept at building microservices architectures and integrating Generative AI into robust web applications. Passionate about continuous learning, algorithmic problem-solving, and currently seeking Software Engineering internship opportunities to drive impactful technical solutions               
-                </p>
+                <div class="about-card-top">
+                    <span class="about-badge" id="about-mode-label">// bio.md</span>
+                    <button type="button" class="json-toggle-btn" id="toggle-json-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                        <span id="toggle-json-text">View as JSON / Dev Profile</span>
+                    </button>
+                </div>
+
+                <!-- Prose View -->
+                <div class="about-view" id="about-prose-view">
+                    <p class="about-prose">
+                        Highly motivated Informatics student specializing in Fullstack Development, Artificial Intelligence, and scalable backend systems. Adept at building microservices architectures and integrating Generative AI into robust web applications. Passionate about continuous learning, algorithmic problem-solving, and currently seeking Software Engineering internship opportunities to drive impactful technical solutions
+                    </p>
+                </div>
+
+                <!-- JSON Dev Profile View -->
+                <div class="about-view hidden" id="about-json-view">
+<pre class="json-pre">{
+  <span class="tok-key">"name"</span>: <span class="tok-str">"Abdil"</span>,
+  <span class="tok-key">"education"</span>: <span class="tok-str">"Informatics Student"</span>,
+  <span class="tok-key">"specializations"</span>: [
+    <span class="tok-str">"Fullstack Development"</span>,
+    <span class="tok-str">"Artificial Intelligence &amp; Generative AI"</span>,
+    <span class="tok-str">"Scalable Backend &amp; Microservices"</span>
+  ],
+  <span class="tok-key">"coreStrengths"</span>: [
+    <span class="tok-str">"Microservices Architectures"</span>,
+    <span class="tok-str">"Algorithmic Problem-Solving"</span>,
+    <span class="tok-str">"Continuous Learning"</span>
+  ],
+  <span class="tok-key">"openToInternship"</span>: <span class="tok-bool">true</span>,
+  <span class="tok-key">"targetRole"</span>: <span class="tok-str">"Software Engineering Intern"</span>
+}</pre>
+                </div>
+
+                <!-- Minimalist 3-Pill Focus Bar -->
+                <div class="focus-bar">
+                    <span class="focus-pill">Fullstack &amp; Microservices</span>
+                    <span class="focus-pill">Generative AI Integration</span>
+                    <span class="focus-pill">Algorithmic Problem Solving</span>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- Skills & Technologies Section -->
     <section id="skills" class="skills">
         <div class="container animate-on-scroll">
-            <h2 class="section-title">Skills & Technologies</h2>
+            <h2 class="section-title">Skills &amp; Technologies</h2>
+            <p class="skills-hint">Tip: Click any skill pill to highlight matching projects below</p>
+
             <div class="skills-grid">
+                <!-- Card 1: Programming Languages -->
                 <div class="glass-card skill-card">
-                    <h3>Programming Languages</h3>
-                    <p>HTML, CSS, Java, PHP, Golang, Python, JavaScript/TypeScript, SQL</p>
+                    <h3><span class="cat-dot"></span>Programming Languages</h3>
+                    <div class="skill-pills">
+                        <button type="button" class="skill-pill" data-skill="html">HTML</button>
+                        <button type="button" class="skill-pill" data-skill="css">CSS</button>
+                        <button type="button" class="skill-pill" data-skill="java">Java</button>
+                        <button type="button" class="skill-pill" data-skill="php">PHP</button>
+                        <button type="button" class="skill-pill" data-skill="golang">Golang</button>
+                        <button type="button" class="skill-pill" data-skill="python">Python</button>
+                        <button type="button" class="skill-pill" data-skill="javascript">JavaScript/TypeScript</button>
+                        <button type="button" class="skill-pill" data-skill="sql">SQL</button>
+                    </div>
                 </div>
+
+                <!-- Card 2: Frameworks & Libraries -->
                 <div class="glass-card skill-card">
-                    <h3>Frameworks & Libraries</h3>
-                    <p>Spring Boot, Next.js, React, Gin, Tailwind CSS</p>
+                    <h3><span class="cat-dot"></span>Frameworks &amp; Libraries</h3>
+                    <div class="skill-pills">
+                        <button type="button" class="skill-pill" data-skill="spring boot">Spring Boot</button>
+                        <button type="button" class="skill-pill" data-skill="next.js">Next.js</button>
+                        <button type="button" class="skill-pill" data-skill="react">React</button>
+                        <button type="button" class="skill-pill" data-skill="gin">Gin</button>
+                        <button type="button" class="skill-pill" data-skill="tailwind css">Tailwind CSS</button>
+                    </div>
                 </div>
+
+                <!-- Card 3: Databases & Tools -->
                 <div class="glass-card skill-card">
-                    <h3>Databases & Tools</h3>
-                    <p>MongoDB, PostgreSQL, Git, REST APIs, GORM, Hibernate/JPA</p>
+                    <h3><span class="cat-dot"></span>Databases &amp; Tools</h3>
+                    <div class="skill-pills">
+                        <button type="button" class="skill-pill" data-skill="mongodb">MongoDB</button>
+                        <button type="button" class="skill-pill" data-skill="postgresql">PostgreSQL</button>
+                        <button type="button" class="skill-pill" data-skill="git">Git</button>
+                        <button type="button" class="skill-pill" data-skill="rest api">REST APIs</button>
+                        <button type="button" class="skill-pill" data-skill="gorm">GORM</button>
+                        <button type="button" class="skill-pill" data-skill="jpa">Hibernate/JPA</button>
+                    </div>
                 </div>
+
+                <!-- Card 4: Languages (Spoken) -->
                 <div class="glass-card skill-card">
-                    <h3>Languages (Spoken)</h3>
-                    <p>Indonesian (Native), English (Professional Working Proficiency)</p>
+                    <h3><span class="cat-dot"></span>Languages (Spoken)</h3>
+                    <div class="skill-pills">
+                        <button type="button" class="skill-pill" data-skill="spoken-id" data-info="Indonesian — Native speaker">Indonesian (Native)</button>
+                        <button type="button" class="skill-pill" data-skill="spoken-en" data-info="English — Professional Working Proficiency">English (Professional Working Proficiency)</button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Recent Projects Section -->
     <section id="projects" class="projects">
         <div class="container animate-on-scroll">
             <h2 class="section-title">Recent Projects</h2>
+
+            <!-- Category Filter Pills -->
+            <div class="project-filters" role="tablist" aria-label="Filter projects by category">
+                <button type="button" class="filter-pill active" data-filter="all">All</button>
+                <button type="button" class="filter-pill" data-filter="backend">Backend &amp; API</button>
+                <button type="button" class="filter-pill" data-filter="ai">AI &amp; Microservices</button>
+                <button type="button" class="filter-pill" data-filter="fullstack">Fullstack</button>
+            </div>
+
+            <!-- Active Skill Match Indicator -->
+            <div class="skill-match-banner" id="skill-match-banner">
+                <span id="skill-match-text"></span>
+                <button type="button" class="clear-skill-btn" id="clear-skill-btn">Clear Highlight</button>
+            </div>
+
             <div class="project-grid">
-                <div class="glass-card project-card">
-                    <h3>Digital Payment Gateway API</h3>
-                    <div class="project-tech">Java 17, Spring Boot, PostgreSQL, Spring Data JPA</div>
+                <!-- Project 1: Digital Payment Gateway API -->
+                <article class="glass-card project-card" data-category="backend" data-skills="java,spring boot,postgresql,jpa,sql,rest api,git">
+                    <div class="project-header">
+                        <h3>Digital Payment Gateway API</h3>
+                        <span class="project-category-tag">Backend &amp; API</span>
+                    </div>
+
+                    <div class="project-tech">
+                        <span class="tech-tag">Java 17</span>
+                        <span class="tech-tag">Spring Boot</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">Spring Data JPA</span>
+                    </div>
+
                     <p>Developed a secure RESTful API simulation of a digital payment gateway transaction lifecycle using Java and Spring Boot. Built upon a 3-Tier Layered Architecture, the backend application automates transaction status handling, enforces strict inbound data rules through DTO validation, manages data persistence via PostgreSQL, and utilizes a centralized Global Exception Handler to ensure clean, standardized client-ready JSON error responses</p>
-                    <a href="https://github.com/abdilnayaka/payment-gateway-API" class="project-link">View Details</a>
-                </div>
-                <div class="glass-card project-card">
-                    <h3>hirint (AI-Powered Applicant Tracking System)</h3>
-                    <div class="project-tech">Golang, Gin, GORM, Next.js, Tailwind CSS, Python, PostgreSQL, Google Gemini API</div>
-                    <p>Smart ATS is an AI-powered recruitment platform built with a scalable Monorepo architecture, featuring a robust Golang-Gin backend, a Python-based NLP microservice, and a modern Next.js frontend. The system streamlines the hiring process by leveraging the Google Gemini API for intelligent resume parsing, skill-set analysis, and dynamic candidate-job matching, while providing HR professionals with real-time application tracking and applicants with a seamless, intuitive experience </p>
-                    <a href="https://github.com/abdilnayaka/hirint-smart-ats-jobseeker" class="project-link">View Details</a>
-                </div>
-                <div class="glass-card project-card">
-                    <h3>HCIS (Modern Leave & Attendance Tracker)</h3>
-                    <div class="project-tech">PHP, Laravel, Next.js, Tailwind CSS, MySQL, REST API </div>
-                    <p>Engineered a full-stack Human Capital Information System (HCIS) using Next.js, PHP/Laravel, and MySQL to modernize employee leave tracking and streamline HR approval workflows. Architected a secure, role-based RESTful API utilizing Laravel Sanctum for strict access control, coupled with automated backend business logic via Eloquent ORM to handle dynamic leave balance deductions. The platform features high-performance, responsive dashboards built with Tailwind CSS, delivering a seamless user experience for submitting applications and managing enterprise HR data. </p>
-                    <a href="https://github.com/abdilnayaka/hcis-leave-tracker" class="project-link">View Details</a>
-                </div>
+
+                    <div class="project-actions">
+                        <a href="https://github.com/abdilnayaka/payment-gateway-API" target="_blank" rel="noopener noreferrer" class="btn btn-sm project-link">View Details</a>
+                        <button type="button" class="btn btn-outline btn-sm demo-btn" data-demo="payment">&#9654; Interactive Demo</button>
+                    </div>
+                </article>
+
+                <!-- Project 2: hirint (AI-Powered Applicant Tracking System) -->
+                <article class="glass-card project-card" data-category="ai" data-skills="golang,gin,gorm,next.js,react,tailwind css,python,postgresql,sql,javascript,html,css,rest api,git">
+                    <div class="project-header">
+                        <h3>hirint (AI-Powered Applicant Tracking System)</h3>
+                        <span class="project-category-tag">AI &amp; Microservices</span>
+                    </div>
+
+                    <div class="project-tech">
+                        <span class="tech-tag">Golang</span>
+                        <span class="tech-tag">Gin</span>
+                        <span class="tech-tag">GORM</span>
+                        <span class="tech-tag">Next.js</span>
+                        <span class="tech-tag">Tailwind CSS</span>
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">Google Gemini API</span>
+                    </div>
+
+                    <p>Smart ATS is an AI-powered recruitment platform built with a scalable Monorepo architecture, featuring a robust Golang-Gin backend, a Python-based NLP microservice, and a modern Next.js frontend. The system streamlines the hiring process by leveraging the Google Gemini API for intelligent resume parsing, skill-set analysis, and dynamic candidate-job matching, while providing HR professionals with real-time application tracking and applicants with a seamless, intuitive experience</p>
+
+                    <div class="project-actions">
+                        <a href="https://github.com/abdilnayaka/hirint-smart-ats-jobseeker" target="_blank" rel="noopener noreferrer" class="btn btn-sm project-link">View Details</a>
+                        <button type="button" class="btn btn-outline btn-sm demo-btn" data-demo="hirint">&#9654; Interactive Demo</button>
+                    </div>
+                </article>
+
+                <!-- Project 3: HCIS (Modern Leave & Attendance Tracker) -->
+                <article class="glass-card project-card" data-category="fullstack" data-skills="php,next.js,react,tailwind css,sql,rest api,javascript,html,css,git">
+                    <div class="project-header">
+                        <h3>HCIS (Modern Leave &amp; Attendance Tracker)</h3>
+                        <span class="project-category-tag">Fullstack</span>
+                    </div>
+
+                    <div class="project-tech">
+                        <span class="tech-tag">PHP</span>
+                        <span class="tech-tag">Laravel</span>
+                        <span class="tech-tag">Next.js</span>
+                        <span class="tech-tag">Tailwind CSS</span>
+                        <span class="tech-tag">MySQL</span>
+                        <span class="tech-tag">REST API</span>
+                    </div>
+
+                    <p>Engineered a full-stack Human Capital Information System (HCIS) using Next.js, PHP/Laravel, and MySQL to modernize employee leave tracking and streamline HR approval workflows. Architected a secure, role-based RESTful API utilizing Laravel Sanctum for strict access control, coupled with automated backend business logic via Eloquent ORM to handle dynamic leave balance deductions. The platform features high-performance, responsive dashboards built with Tailwind CSS, delivering a seamless user experience for submitting applications and managing enterprise HR data.</p>
+
+                    <div class="project-actions">
+                        <a href="https://github.com/abdilnayaka/hcis-leave-tracker" target="_blank" rel="noopener noreferrer" class="btn btn-sm project-link">View Details</a>
+                        <button type="button" class="btn btn-outline btn-sm demo-btn" data-demo="hcis">&#9654; Interactive Demo</button>
+                    </div>
+                </article>
             </div>
         </div>
     </section>
@@ -105,24 +1691,868 @@
         <div class="container animate-on-scroll">
             <h2 class="section-title">Let's Work Together</h2>
             <p class="contact-desc">Interested in collaborating on a project or exploring new technical opportunities?</p>
-            
-            <!-- Kotak Email -->
+
             <div class="glass-card contact-info">
                 <p>Drop me an email at:</p>
-                <a href="mailto:emailanda@example.com" class="email-text">abdilnayakanr@gmail.com</a>
+                <div class="email-row">
+                    <a href="mailto:abdilnayakanr@gmail.com" class="email-text">abdilnayakanr@gmail.com</a>
+                    <button type="button" class="copy-email-btn" id="copy-email-btn" aria-label="Copy Email Address">
+                        <span id="copy-icon">&#128203;</span>
+                        <span id="copy-label">Copy Email</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- Tombol Aksi -->
             <div class="contact-buttons">
-                <a href="mailto:abdilnayakanr@gmail.com" class="btn">Send Email</a>
+                <a href="mailto:abdilnayakanr@gmail.com" class="btn magnetic">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    Send Email
+                </a>
             </div>
         </div>
     </section>
 
+    <!-- Footer -->
     <footer>
         <p>&copy; 2026 Abdil. Powered by pure HTML, CSS, and JavaScript.</p>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- ==========================================================================
+         MODAL 1: COMMAND PALETTE (Ctrl+K / Cmd+K)
+         ========================================================================== -->
+    <div class="modal-overlay" id="cmd-modal" role="dialog" aria-modal="true" aria-label="Command Palette">
+        <div class="modal-box cmd-box">
+            <div class="cmd-search-bar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="cmd-input" placeholder="Search sections, project demos, or actions..." autocomplete="off">
+                <span class="kbd-chip">ESC</span>
+            </div>
+            <div class="cmd-list" id="cmd-list"></div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL 2: PAYMENT GATEWAY API INTERACTIVE DEMO
+         ========================================================================== -->
+    <div class="modal-overlay" id="demo-payment-modal" role="dialog" aria-modal="true" aria-label="Payment Gateway API Demo">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><span>&#128179;</span> Digital Payment Gateway API — Live Simulator</h3>
+                <button type="button" class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="demo-endpoint-bar">
+                    <div><span class="http-method">POST</span><span>/api/v1/payments</span></div>
+                    <span style="color:var(--text-muted);">Spring Boot 3-Tier</span>
+                </div>
+
+                <div class="demo-toggle-group">
+                    <button type="button" class="demo-seg-btn active" id="pay-valid-btn">Valid Transaction DTO</button>
+                    <button type="button" class="demo-seg-btn" id="pay-invalid-btn">Invalid DTO (Negative Amount)</button>
+                </div>
+
+                <pre class="demo-console" id="pay-payload-preview" style="margin-top:0;margin-bottom:1rem;"></pre>
+
+                <button type="button" class="btn btn-sm" id="pay-send-btn" style="width:100%;">Send Request</button>
+
+                <div class="pipeline-steps">
+                    <div class="pipe-node" id="pay-step-1">Controller<br><span style="opacity:0.7;">@Valid DTO</span></div>
+                    <span class="pipe-arrow">&rarr;</span>
+                    <div class="pipe-node" id="pay-step-2">Service<br><span style="opacity:0.7;">Tx Lifecycle</span></div>
+                    <span class="pipe-arrow">&rarr;</span>
+                    <div class="pipe-node" id="pay-step-3">Repository<br><span style="opacity:0.7;">PostgreSQL</span></div>
+                </div>
+
+                <pre class="demo-console" id="pay-response-output">// Click "Send Request" to inspect the 3-Tier API response...</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL 3: HIRINT SMART ATS INTERACTIVE DEMO
+         ========================================================================== -->
+    <div class="modal-overlay" id="demo-hirint-modal" role="dialog" aria-modal="true" aria-label="hirint Smart ATS Demo">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><span>&#10024;</span> hirint Smart ATS — Gemini Pipeline Simulator</h3>
+                <button type="button" class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.85rem;">Select a sample candidate resume to test the Monorepo microservices &amp; Google Gemini API matching pipeline:</p>
+
+                <div class="demo-toggle-group" id="ats-candidate-group">
+                    <button type="button" class="demo-seg-btn active" data-candidate="backend">Backend Eng (Go/SQL)</button>
+                    <button type="button" class="demo-seg-btn" data-candidate="fullstack">Fullstack (Next/Laravel)</button>
+                    <button type="button" class="demo-seg-btn" data-candidate="ai">AI Intern (Python/NLP)</button>
+                </div>
+
+                <button type="button" class="btn btn-sm" id="ats-run-btn" style="width:100%;">Analyze with Gemini Pipeline</button>
+
+                <div class="pipeline-steps">
+                    <div class="pipe-node" id="ats-step-1">Next.js<br><span style="opacity:0.7;">Upload</span></div>
+                    <span class="pipe-arrow">&rarr;</span>
+                    <div class="pipe-node" id="ats-step-2">Golang Gin<br><span style="opacity:0.7;">Gateway</span></div>
+                    <span class="pipe-arrow">&rarr;</span>
+                    <div class="pipe-node" id="ats-step-3">Python NLP<br><span style="opacity:0.7;">Parser</span></div>
+                    <span class="pipe-arrow">&rarr;</span>
+                    <div class="pipe-node" id="ats-step-4">Gemini API<br><span style="opacity:0.7;">Scoring</span></div>
+                </div>
+
+                <div class="ats-result-card" id="ats-result-card">
+                    <div class="ats-score-row">
+                        <strong id="ats-role-label" style="font-size:0.9rem;">Target Match Score</strong>
+                        <span id="ats-score-num" style="font-family:var(--font-mono);font-weight:700;color:var(--accent-2);">0%</span>
+                    </div>
+                    <div class="ats-bar-bg"><div class="ats-bar-fill" id="ats-bar-fill"></div></div>
+                    <div class="project-tech" id="ats-extracted-skills" style="margin-bottom:0.75rem;"></div>
+                    <p id="ats-recommendation" style="font-size:0.84rem;color:var(--text-secondary);line-height:1.6;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL 4: HCIS LEAVE TRACKER INTERACTIVE DEMO
+         ========================================================================== -->
+    <div class="modal-overlay" id="demo-hcis-modal" role="dialog" aria-modal="true" aria-label="HCIS Leave Tracker Demo">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><span>&#128197;</span> HCIS Leave Tracker — Role &amp; ORM Simulator</h3>
+                <button type="button" class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="hcis-grid">
+                    <div class="hcis-stat">
+                        <div class="hcis-stat-label">Remaining Leave Balance</div>
+                        <div class="hcis-stat-val"><span id="hcis-balance">12</span> <span style="font-size:0.85rem;font-weight:500;color:var(--text-secondary);">days</span></div>
+                    </div>
+                    <div class="hcis-stat">
+                        <div class="hcis-stat-label">Auth Guard Status</div>
+                        <div style="font-family:var(--font-mono);font-size:0.84rem;color:#34d399;margin-top:0.35rem;" id="hcis-auth-status">Sanctum Token: Active</div>
+                    </div>
+                </div>
+
+                <form class="hcis-form" id="hcis-form">
+                    <select class="hcis-input" id="hcis-type">
+                        <option value="Annual Leave">Annual Leave</option>
+                        <option value="Sick Leave">Sick Leave</option>
+                        <option value="Personal Leave">Personal Leave</option>
+                    </select>
+                    <input type="number" class="hcis-input" id="hcis-days" min="1" max="5" value="2" style="max-width:90px;" aria-label="Number of days">
+                    <button type="submit" class="btn btn-sm">Submit Request</button>
+                </form>
+
+                <div style="font-family:var(--font-mono);font-size:0.74rem;color:var(--text-muted);margin-bottom:0.5rem;">HR MANAGER APPROVAL QUEUE</div>
+                <div id="hcis-queue"></div>
+
+                <pre class="demo-console" id="hcis-log">// Submit a leave request, then approve it as HR Manager to trigger Eloquent ORM deduction.</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notification -->
+    <div id="toast" role="status" aria-live="polite">
+        <span style="color:var(--accent-2);font-weight:700;">&#10003;</span>
+        <span id="toast-msg">Done!</span>
+    </div>
+
+    <!-- ==========================================================================
+         PURE VANILLA JAVASCRIPT (ZERO EXTERNAL DEPENDENCIES)
+         ========================================================================== -->
+    <script>
+    (function () {
+        "use strict";
+
+        /* ------------------------------------------------------------------------
+           1. THEME TOGGLE (DARK DEFAULT / LIGHT MODE)
+           ------------------------------------------------------------------------ */
+        const htmlEl = document.documentElement;
+        const themeBtn = document.getElementById("theme-toggle");
+        const themeIcon = document.getElementById("theme-icon");
+
+        const SUN_SVG = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+        const MOON_SVG = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+
+        function applyTheme(theme) {
+            htmlEl.setAttribute("data-theme", theme);
+            themeIcon.innerHTML = theme === "dark" ? SUN_SVG : MOON_SVG;
+            try { localStorage.setItem("abdil-theme", theme); } catch (e) {}
+        }
+
+        function toggleTheme() {
+            const next = (htmlEl.getAttribute("data-theme") || "dark") === "dark" ? "light" : "dark";
+            applyTheme(next);
+            showToast(next === "dark" ? "Dark Mode enabled" : "Light Mode enabled");
+        }
+
+        try {
+            const saved = localStorage.getItem("abdil-theme");
+            if (saved === "light" || saved === "dark") applyTheme(saved);
+        } catch (e) {}
+
+        themeBtn.addEventListener("click", toggleTheme);
+
+        /* ------------------------------------------------------------------------
+           2. TOAST NOTIFICATION & COPY EMAIL (IFRAME-SAFE)
+           ------------------------------------------------------------------------ */
+        const toastEl = document.getElementById("toast");
+        const toastMsgEl = document.getElementById("toast-msg");
+        const copyEmailBtn = document.getElementById("copy-email-btn");
+        const copyIconEl = document.getElementById("copy-icon");
+        const copyLabelEl = document.getElementById("copy-label");
+        let toastTimer = null;
+
+        function showToast(msg) {
+            toastMsgEl.textContent = msg;
+            toastEl.classList.add("show");
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+        }
+
+        function copyEmail() {
+            const email = "abdilnayakanr@gmail.com";
+            const ta = document.createElement("textarea");
+            ta.value = email;
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand("copy");
+            } catch (err) {}
+            document.body.removeChild(ta);
+
+            copyEmailBtn.classList.add("copied");
+            copyIconEl.textContent = "✓";
+            copyLabelEl.textContent = "Copied!";
+            showToast("Email copied: " + email);
+
+            setTimeout(() => {
+                copyEmailBtn.classList.remove("copied");
+                copyIconEl.textContent = "📋";
+                copyLabelEl.textContent = "Copy Email";
+            }, 2200);
+        }
+
+        copyEmailBtn.addEventListener("click", copyEmail);
+
+        /* ------------------------------------------------------------------------
+           3. NAVBAR HAMBURGER, SMOOTH SCROLL, SCROLL PROGRESS & SCROLL-SPY
+           ------------------------------------------------------------------------ */
+        const navLinksList = document.getElementById("nav-links");
+        const navAnchorEls = document.querySelectorAll(".nav-links a");
+        const hamburgerBtn = document.getElementById("hamburger-btn");
+        const scrollProgressEl = document.getElementById("scroll-progress");
+
+        hamburgerBtn.addEventListener("click", () => {
+            navLinksList.classList.toggle("open");
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener("click", function (e) {
+                const href = this.getAttribute("href");
+                if (!href || href === "#") return;
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    navLinksList.classList.remove("open");
+                    window.scrollTo({
+                        top: target.offsetTop - 68,
+                        behavior: "smooth"
+                    });
+                }
+            });
+        });
+
+        window.addEventListener("scroll", () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            scrollProgressEl.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + "%";
+        }, { passive: true });
+
+        // Active section scroll-spy
+        const sections = document.querySelectorAll("section[id]");
+        const spyObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute("id");
+                    navAnchorEls.forEach(a => {
+                        a.classList.toggle("active", a.getAttribute("href") === "#" + id);
+                    });
+                }
+            });
+        }, { rootMargin: "-35% 0px -55% 0px" });
+
+        sections.forEach(sec => spyObserver.observe(sec));
+
+        // Scroll reveal animation
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll(".animate-on-scroll").forEach(el => revealObserver.observe(el));
+
+        /* ------------------------------------------------------------------------
+           4. AMBIENT ORB PARALLAX, GLASS CARD SPOTLIGHT & MAGNETIC BUTTONS
+           ------------------------------------------------------------------------ */
+        const glow1 = document.querySelector(".glow-1");
+        const glow2 = document.querySelector(".glow-2");
+
+        window.addEventListener("mousemove", (e) => {
+            const nx = (e.clientX / window.innerWidth - 0.5) * 28;
+            const ny = (e.clientY / window.innerHeight - 0.5) * 28;
+            glow1.style.marginLeft = nx + "px";
+            glow1.style.marginTop = ny + "px";
+            glow2.style.marginRight = (-nx) + "px";
+            glow2.style.marginBottom = (-ny) + "px";
+        }, { passive: true });
+
+        // Radial cursor spotlight on all .glass-card elements
+        document.querySelectorAll(".glass-card").forEach(card => {
+            card.addEventListener("mousemove", (e) => {
+                const rect = card.getBoundingClientRect();
+                card.style.setProperty("--mx", (e.clientX - rect.left) + "px");
+                card.style.setProperty("--my", (e.clientY - rect.top) + "px");
+            });
+        });
+
+        // Subtle magnetic hover effect on .magnetic buttons
+        document.querySelectorAll(".magnetic").forEach(btn => {
+            btn.addEventListener("mousemove", (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = (e.clientX - rect.left - rect.width / 2) * 0.18;
+                const y = (e.clientY - rect.top - rect.height / 2) * 0.18;
+                btn.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+            });
+            btn.addEventListener("mouseleave", () => {
+                btn.style.transform = "translate(0px, 0px)";
+            });
+        });
+
+        /* ------------------------------------------------------------------------
+           5. HERO DYNAMIC TYPING ANIMATION
+           ------------------------------------------------------------------------ */
+        const typingEl = document.getElementById("typing-text");
+        const roles = [
+            "Fullstack Developer",
+            "Backend Systems Architect",
+            "AI & GenAI Engineer",
+            "Informatics Student"
+        ];
+        let roleIndex = 0;
+        let charIndex = 0;
+        let deleting = false;
+
+        function runTyping() {
+            const current = roles[roleIndex];
+            if (!deleting) {
+                charIndex++;
+                typingEl.textContent = current.slice(0, charIndex);
+                if (charIndex === current.length) {
+                    deleting = true;
+                    setTimeout(runTyping, 1750);
+                    return;
+                }
+                setTimeout(runTyping, 68);
+            } else {
+                charIndex--;
+                typingEl.textContent = current.slice(0, charIndex);
+                if (charIndex === 0) {
+                    deleting = false;
+                    roleIndex = (roleIndex + 1) % roles.length;
+                    setTimeout(runTyping, 280);
+                    return;
+                }
+                setTimeout(runTyping, 36);
+            }
+        }
+        runTyping();
+
+        /* ------------------------------------------------------------------------
+           6. ABOUT ME: PROSE <-> JSON DEV PROFILE TOGGLE
+           ------------------------------------------------------------------------ */
+        const toggleJsonBtn = document.getElementById("toggle-json-btn");
+        const toggleJsonText = document.getElementById("toggle-json-text");
+        const aboutModeLabel = document.getElementById("about-mode-label");
+        const aboutProseView = document.getElementById("about-prose-view");
+        const aboutJsonView = document.getElementById("about-json-view");
+        let isJsonView = false;
+
+        toggleJsonBtn.addEventListener("click", () => {
+            isJsonView = !isJsonView;
+            aboutProseView.classList.toggle("hidden", isJsonView);
+            aboutJsonView.classList.toggle("hidden", !isJsonView);
+            aboutModeLabel.textContent = isJsonView ? "// abdil.profile.json" : "// bio.md";
+            toggleJsonText.textContent = isJsonView ? "View as Readable Bio" : "View as JSON / Dev Profile";
+        });
+
+        /* ------------------------------------------------------------------------
+           7. SKILLS <-> PROJECTS INTERACTIVE HIGHLIGHTING & CATEGORY FILTERS
+           ------------------------------------------------------------------------ */
+        const skillPills = document.querySelectorAll(".skill-pill");
+        const filterPills = document.querySelectorAll(".filter-pill");
+        const projectCards = document.querySelectorAll(".project-card");
+        const skillMatchBanner = document.getElementById("skill-match-banner");
+        const skillMatchText = document.getElementById("skill-match-text");
+        const clearSkillBtn = document.getElementById("clear-skill-btn");
+        let activeSkill = null;
+
+        function clearSkillHighlight() {
+            activeSkill = null;
+            skillPills.forEach(p => p.classList.remove("active-skill"));
+            projectCards.forEach(c => {
+                c.classList.remove("skill-matched", "skill-dimmed");
+            });
+            skillMatchBanner.classList.remove("visible");
+        }
+
+        clearSkillBtn.addEventListener("click", clearSkillHighlight);
+
+        skillPills.forEach(pill => {
+            pill.addEventListener("click", () => {
+                const info = pill.getAttribute("data-info");
+                if (info) {
+                    showToast(info);
+                    return;
+                }
+
+                const key = pill.getAttribute("data-skill");
+                if (activeSkill === key) {
+                    clearSkillHighlight();
+                    return;
+                }
+
+                activeSkill = key;
+                skillPills.forEach(p => p.classList.toggle("active-skill", p === pill));
+
+                // Reset category filter to All so matched projects are visible
+                filterPills.forEach(f => f.classList.toggle("active", f.getAttribute("data-filter") === "all"));
+                projectCards.forEach(c => c.classList.remove("hidden-project"));
+
+                let matchCount = 0;
+                projectCards.forEach(card => {
+                    const tags = (card.getAttribute("data-skills") || "").split(",");
+                    if (tags.includes(key)) {
+                        card.classList.add("skill-matched");
+                        card.classList.remove("skill-dimmed");
+                        matchCount++;
+                    } else {
+                        card.classList.remove("skill-matched");
+                        card.classList.add("skill-dimmed");
+                    }
+                });
+
+                if (matchCount > 0) {
+                    skillMatchText.textContent = `Highlighting ${matchCount} project${matchCount > 1 ? "s" : ""} using "${pill.textContent}"`;
+                    skillMatchBanner.classList.add("visible");
+                    showToast(`Matched ${matchCount} project${matchCount > 1 ? "s" : ""} for ${pill.textContent}`);
+                } else {
+                    clearSkillHighlight();
+                    showToast(`${pill.textContent} — Ready for upcoming projects & internships!`);
+                }
+            });
+        });
+
+        filterPills.forEach(btn => {
+            btn.addEventListener("click", () => {
+                clearSkillHighlight();
+                const cat = btn.getAttribute("data-filter");
+                filterPills.forEach(f => f.classList.toggle("active", f === btn));
+                projectCards.forEach(card => {
+                    const match = cat === "all" || card.getAttribute("data-category") === cat;
+                    card.classList.toggle("hidden-project", !match);
+                });
+            });
+        });
+
+        /* ------------------------------------------------------------------------
+           8. MODAL UTILITIES
+           ------------------------------------------------------------------------ */
+        const allModals = document.querySelectorAll(".modal-overlay");
+
+        function closeAllModals() {
+            allModals.forEach(m => m.classList.remove("open"));
+        }
+
+        function openModalById(id) {
+            closeAllModals();
+            const m = document.getElementById(id);
+            if (m) m.classList.add("open");
+        }
+
+        document.querySelectorAll("[data-close-modal]").forEach(btn => {
+            btn.addEventListener("click", closeAllModals);
+        });
+
+        allModals.forEach(modal => {
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) closeAllModals();
+            });
+        });
+
+        document.querySelectorAll(".demo-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const type = btn.getAttribute("data-demo");
+                if (type === "payment") openModalById("demo-payment-modal");
+                if (type === "hirint") openModalById("demo-hirint-modal");
+                if (type === "hcis") openModalById("demo-hcis-modal");
+            });
+        });
+
+        /* ------------------------------------------------------------------------
+           9. DEMO 1: DIGITAL PAYMENT GATEWAY API SIMULATOR
+           ------------------------------------------------------------------------ */
+        const payValidBtn = document.getElementById("pay-valid-btn");
+        const payInvalidBtn = document.getElementById("pay-invalid-btn");
+        const payPayloadEl = document.getElementById("pay-payload-preview");
+        const payResponseEl = document.getElementById("pay-response-output");
+        const paySendBtn = document.getElementById("pay-send-btn");
+        const paySteps = [
+            document.getElementById("pay-step-1"),
+            document.getElementById("pay-step-2"),
+            document.getElementById("pay-step-3")
+        ];
+        let payValidMode = true;
+
+        const VALID_PAYLOAD = {
+            merchantId: "MRC-2026-009",
+            amount: 250000,
+            currency: "IDR",
+            paymentMethod: "VIRTUAL_ACCOUNT"
+        };
+
+        const INVALID_PAYLOAD = {
+            merchantId: "MRC-2026-009",
+            amount: -50000,
+            currency: "",
+            paymentMethod: "VIRTUAL_ACCOUNT"
+        };
+
+        function updatePayPayload() {
+            payPayloadEl.textContent = JSON.stringify(payValidMode ? VALID_PAYLOAD : INVALID_PAYLOAD, null, 2);
+            paySteps.forEach(s => s.className = "pipe-node");
+        }
+        updatePayPayload();
+
+        payValidBtn.addEventListener("click", () => {
+            payValidMode = true;
+            payValidBtn.classList.add("active");
+            payInvalidBtn.classList.remove("active");
+            updatePayPayload();
+        });
+
+        payInvalidBtn.addEventListener("click", () => {
+            payValidMode = false;
+            payInvalidBtn.classList.add("active");
+            payValidBtn.classList.remove("active");
+            updatePayPayload();
+        });
+
+        paySendBtn.addEventListener("click", () => {
+            paySteps.forEach(s => s.className = "pipe-node");
+            payResponseEl.textContent = "// Sending request to Spring Boot PaymentController...";
+            paySteps[0].classList.add("running");
+
+            setTimeout(() => {
+                if (!payValidMode) {
+                    paySteps[0].className = "pipe-node error";
+                    payResponseEl.textContent = "HTTP/1.1 400 Bad Request (GlobalExceptionHandler)\n" + JSON.stringify({
+                        timestamp: new Date().toISOString(),
+                        status: 400,
+                        error: "Validation Failed",
+                        violations: [
+                            { field: "amount", message: "must be greater than 0" },
+                            { field: "currency", message: "must not be blank" }
+                        ]
+                    }, null, 2);
+                    return;
+                }
+
+                paySteps[0].className = "pipe-node success";
+                paySteps[1].classList.add("running");
+
+                setTimeout(() => {
+                    paySteps[1].className = "pipe-node success";
+                    paySteps[2].classList.add("running");
+
+                    setTimeout(() => {
+                        paySteps[2].className = "pipe-node success";
+                        const txId = "TXN-" + Math.floor(100000 + Math.random() * 900000);
+                        payResponseEl.textContent = "HTTP/1.1 201 Created\n" + JSON.stringify({
+                            transactionId: txId,
+                            status: "SETTLED",
+                            amount: 250000,
+                            currency: "IDR",
+                            persistedIn: "PostgreSQL (Spring Data JPA)",
+                            createdAt: new Date().toISOString()
+                        }, null, 2);
+                    }, 340);
+                }, 340);
+            }, 320);
+        });
+
+        /* ------------------------------------------------------------------------
+           10. DEMO 2: HIRINT SMART ATS GEMINI PIPELINE SIMULATOR
+           ------------------------------------------------------------------------ */
+        const atsCandidateBtns = document.querySelectorAll("#ats-candidate-group .demo-seg-btn");
+        const atsRunBtn = document.getElementById("ats-run-btn");
+        const atsResultCard = document.getElementById("ats-result-card");
+        const atsScoreNum = document.getElementById("ats-score-num");
+        const atsBarFill = document.getElementById("ats-bar-fill");
+        const atsSkillsWrap = document.getElementById("ats-extracted-skills");
+        const atsRecEl = document.getElementById("ats-recommendation");
+        const atsRoleLabel = document.getElementById("ats-role-label");
+        const atsSteps = [
+            document.getElementById("ats-step-1"),
+            document.getElementById("ats-step-2"),
+            document.getElementById("ats-step-3"),
+            document.getElementById("ats-step-4")
+        ];
+
+        const ATS_PROFILES = {
+            backend: {
+                title: "Backend Software Engineer Match",
+                score: 94,
+                skills: ["Golang", "Gin", "GORM", "PostgreSQL", "REST APIs", "Java Spring Boot"],
+                rec: "Strong Hire — High alignment with distributed backend architecture, relational database modeling, and clean API design."
+            },
+            fullstack: {
+                title: "Fullstack Engineer Match",
+                score: 91,
+                skills: ["Next.js", "React", "Tailwind CSS", "PHP/Laravel", "TypeScript", "MySQL"],
+                rec: "Recommended for Technical Interview — Proven end-to-end delivery across modern frontend dashboards and secure RESTful backends."
+            },
+            ai: {
+                title: "AI & NLP Engineering Intern Match",
+                score: 89,
+                skills: ["Python", "Google Gemini API", "NLP Microservices", "Prompt Engineering", "FastAPI"],
+                rec: "High Potential — Solid hands-on experience integrating Generative AI pipelines into scalable production-style web apps."
+            }
+        };
+
+        let selectedCandidate = "backend";
+
+        atsCandidateBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                selectedCandidate = btn.getAttribute("data-candidate");
+                atsCandidateBtns.forEach(b => b.classList.toggle("active", b === btn));
+                atsSteps.forEach(s => s.className = "pipe-node");
+                atsResultCard.classList.remove("visible");
+                atsBarFill.style.width = "0%";
+            });
+        });
+
+        atsRunBtn.addEventListener("click", () => {
+            atsSteps.forEach(s => s.className = "pipe-node");
+            atsResultCard.classList.remove("visible");
+            atsBarFill.style.width = "0%";
+
+            atsSteps.forEach((step, idx) => {
+                setTimeout(() => {
+                    if (idx > 0) atsSteps[idx - 1].className = "pipe-node success";
+                    step.classList.add("running");
+
+                    if (idx === atsSteps.length - 1) {
+                        setTimeout(() => {
+                            step.className = "pipe-node success";
+                            const data = ATS_PROFILES[selectedCandidate];
+                            atsRoleLabel.textContent = data.title;
+                            atsScoreNum.textContent = data.score + "%";
+                            atsSkillsWrap.innerHTML = data.skills.map(s => `<span class="tech-tag">${s}</span>`).join("");
+                            atsRecEl.textContent = data.rec;
+                            atsResultCard.classList.add("visible");
+                            setTimeout(() => { atsBarFill.style.width = data.score + "%"; }, 50);
+                        }, 300);
+                    }
+                }, idx * 270);
+            });
+        });
+
+        /* ------------------------------------------------------------------------
+           11. DEMO 3: HCIS LEAVE TRACKER MINI-DASHBOARD
+           ------------------------------------------------------------------------ */
+        const hcisBalanceEl = document.getElementById("hcis-balance");
+        const hcisForm = document.getElementById("hcis-form");
+        const hcisTypeEl = document.getElementById("hcis-type");
+        const hcisDaysEl = document.getElementById("hcis-days");
+        const hcisQueueEl = document.getElementById("hcis-queue");
+        const hcisLogEl = document.getElementById("hcis-log");
+
+        let leaveBalance = 12;
+        let leaveRequests = [
+            { id: 101, type: "Annual Leave", days: 2, status: "pending" }
+        ];
+        let nextReqId = 102;
+
+        function renderHcisQueue() {
+            hcisBalanceEl.textContent = leaveBalance;
+            if (leaveRequests.length === 0) {
+                hcisQueueEl.innerHTML = '<div style="font-size:0.82rem;color:var(--text-muted);padding:0.5rem 0;">No leave requests yet.</div>';
+                return;
+            }
+            hcisQueueEl.innerHTML = leaveRequests.map(req => {
+                const statusClass = req.status === "approved" ? "status-approved" : req.status === "rejected" ? "status-rejected" : "status-pending";
+                const actionsHtml = req.status === "pending"
+                    ? `<div style="display:flex;gap:0.4rem;">
+                           <button type="button" class="btn btn-sm" data-hcis-approve="${req.id}" style="padding:0.32rem 0.65rem;font-size:0.74rem;">Approve (HR)</button>
+                           <button type="button" class="btn btn-outline btn-sm" data-hcis-reject="${req.id}" style="padding:0.32rem 0.65rem;font-size:0.74rem;">Reject</button>
+                       </div>`
+                    : `<span class="status-tag ${statusClass}">${req.status.toUpperCase()}</span>`;
+
+                return `<div class="hcis-queue-item">
+                    <div>
+                        <strong>#${req.id} ${req.type}</strong>
+                        <span style="color:var(--text-muted);margin-left:0.4rem;">(${req.days} day${req.days > 1 ? "s" : ""})</span>
+                    </div>
+                    ${actionsHtml}
+                </div>`;
+            }).join("");
+
+            hcisQueueEl.querySelectorAll("[data-hcis-approve]").forEach(btn => {
+                btn.addEventListener("click", () => handleHcisDecision(parseInt(btn.getAttribute("data-hcis-approve"), 10), "approved"));
+            });
+            hcisQueueEl.querySelectorAll("[data-hcis-reject]").forEach(btn => {
+                btn.addEventListener("click", () => handleHcisDecision(parseInt(btn.getAttribute("data-hcis-reject"), 10), "rejected"));
+            });
+        }
+
+        function handleHcisDecision(id, decision) {
+            const req = leaveRequests.find(r => r.id === id);
+            if (!req || req.status !== "pending") return;
+
+            if (decision === "approved") {
+                if (req.days > leaveBalance) {
+                    hcisLogEl.textContent = `[422 Unprocessable] Insufficient leave balance (${leaveBalance} days left).`;
+                    return;
+                }
+                leaveBalance -= req.days;
+                req.status = "approved";
+                hcisLogEl.textContent = `[Sanctum: role=hr_manager verified]\nEloquent ORM -> LeaveRequest::find(${id})->approve();\nBalance automatically deducted by ${req.days} day(s). Remaining: ${leaveBalance} days.`;
+            } else {
+                req.status = "rejected";
+                hcisLogEl.textContent = `[Sanctum: role=hr_manager verified]\nLeaveRequest #${id} marked as REJECTED. Balance unchanged (${leaveBalance} days).`;
+            }
+            renderHcisQueue();
+        }
+
+        hcisForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const days = parseInt(hcisDaysEl.value, 10);
+            const type = hcisTypeEl.value;
+            if (isNaN(days) || days < 1 || days > 5) return;
+
+            const id = nextReqId++;
+            leaveRequests.unshift({ id, type, days, status: "pending" });
+            hcisLogEl.textContent = `[POST /api/leave-requests] Bearer Token verified via Laravel Sanctum.\nCreated LeaveRequest #${id} (${type}, ${days}d) -> Status: PENDING HR APPROVAL.`;
+            renderHcisQueue();
+        });
+
+        renderHcisQueue();
+
+        /* ------------------------------------------------------------------------
+           12. COMMAND PALETTE (Ctrl+K / Cmd+K)
+           ------------------------------------------------------------------------ */
+        const cmdModal = document.getElementById("cmd-modal");
+        const cmdInput = document.getElementById("cmd-input");
+        const cmdList = document.getElementById("cmd-list");
+
+        function jumpTo(selector) {
+            const el = document.querySelector(selector);
+            if (el) window.scrollTo({ top: el.offsetTop - 68, behavior: "smooth" });
+        }
+
+        const commands = [
+            { label: "Go to Home", tag: "Section", run: () => jumpTo("#home") },
+            { label: "Go to About Me", tag: "Section", run: () => jumpTo("#about") },
+            { label: "Go to Skills & Technologies", tag: "Section", run: () => jumpTo("#skills") },
+            { label: "Go to Recent Projects", tag: "Section", run: () => jumpTo("#projects") },
+            { label: "Go to Contact", tag: "Section", run: () => jumpTo("#contact") },
+            { label: "Demo: Digital Payment Gateway API", tag: "Interactive Demo", run: () => openModalById("demo-payment-modal") },
+            { label: "Demo: hirint Smart ATS (Gemini Pipeline)", tag: "Interactive Demo", run: () => openModalById("demo-hirint-modal") },
+            { label: "Demo: HCIS Leave Tracker", tag: "Interactive Demo", run: () => openModalById("demo-hcis-modal") },
+            { label: "Copy Email (abdilnayakanr@gmail.com)", tag: "Action", run: copyEmail },
+            { label: "Toggle Dark / Light Mode", tag: "Theme", run: toggleTheme },
+            { label: "Download CV (PDF)", tag: "File", run: () => {
+                const a = document.createElement("a");
+                a.href = "CV Abdil Nayaka Rizky.pdf";
+                a.download = "CV Abdil Nayaka Rizky.pdf";
+                a.click();
+                showToast("Downloading CV Abdil Nayaka Rizky.pdf");
+            }}
+        ];
+
+        let filteredCmds = [...commands];
+        let cmdIdx = 0;
+
+        function renderCmdList() {
+            cmdList.innerHTML = "";
+            if (filteredCmds.length === 0) {
+                cmdList.innerHTML = '<div style="padding:1.25rem;text-align:center;color:var(--text-muted);font-size:0.86rem;">No matching commands found.</div>';
+                return;
+            }
+            filteredCmds.forEach((item, idx) => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "cmd-item" + (idx === cmdIdx ? " selected" : "");
+                btn.innerHTML = `<span>${item.label}</span><span class="cmd-tag">${item.tag}</span>`;
+                btn.addEventListener("click", () => {
+                    closeAllModals();
+                    item.run();
+                });
+                cmdList.appendChild(btn);
+            });
+        }
+
+        function openCmdPalette() {
+            cmdInput.value = "";
+            filteredCmds = [...commands];
+            cmdIdx = 0;
+            renderCmdList();
+            openModalById("cmd-modal");
+            setTimeout(() => cmdInput.focus(), 40);
+        }
+
+        document.getElementById("open-cmd-btn").addEventListener("click", openCmdPalette);
+
+        cmdInput.addEventListener("input", () => {
+            const q = cmdInput.value.trim().toLowerCase();
+            filteredCmds = commands.filter(c => c.label.toLowerCase().includes(q) || c.tag.toLowerCase().includes(q));
+            cmdIdx = 0;
+            renderCmdList();
+        });
+
+        cmdInput.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                cmdIdx = (cmdIdx + 1) % Math.max(filteredCmds.length, 1);
+                renderCmdList();
+            } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                cmdIdx = (cmdIdx - 1 + filteredCmds.length) % Math.max(filteredCmds.length, 1);
+                renderCmdList();
+            } else if (e.key === "Enter" && filteredCmds[cmdIdx]) {
+                e.preventDefault();
+                const action = filteredCmds[cmdIdx].run;
+                closeAllModals();
+                action();
+            }
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+                e.preventDefault();
+                if (cmdModal.classList.contains("open")) closeAllModals();
+                else openCmdPalette();
+            } else if (e.key === "Escape") {
+                closeAllModals();
+            }
+        });
+    })();
+    </script>
 </body>
 </html>

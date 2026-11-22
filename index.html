@@ -176,6 +176,21 @@
             transition: width 0.08s linear;
         }
 
+        /* Full-Viewport Interactive Molecular Network Canvas */
+        #molecular-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        #molecular-canvas.molecular-hidden {
+            opacity: 0;
+        }
+
         /* ==========================================================================
            4. STICKY GLASSMORPHIC NAVBAR
            ========================================================================== */
@@ -1408,6 +1423,9 @@
     <div class="glow-bg glow-1" aria-hidden="true"></div>
     <div class="glow-bg glow-2" aria-hidden="true"></div>
 
+    <!-- Full-Viewport Interactive Molecular Network -->
+    <canvas id="molecular-canvas" aria-hidden="true"></canvas>
+
     <!-- Sticky Glassmorphic Navbar -->
     <nav class="navbar">
         <div class="nav-inner">
@@ -2477,6 +2495,7 @@
             { label: "Demo: HCIS Leave Tracker", tag: "Interactive Demo", run: () => openModalById("demo-hcis-modal") },
             { label: "Copy Email (abdilnayakanr@gmail.com)", tag: "Action", run: copyEmail },
             { label: "Toggle Dark / Light Mode", tag: "Theme", run: toggleTheme },
+            { label: "Toggle Molecular Web Background", tag: "Visual", run: toggleMolecularWeb },
             { label: "Download CV (PDF)", tag: "File", run: () => {
                 const a = document.createElement("a");
                 a.href = "CV Abdil Nayaka Rizky.pdf";
@@ -2552,6 +2571,314 @@
                 closeAllModals();
             }
         });
+
+        /* ------------------------------------------------------------------------
+           13. INTERACTIVE MOLECULAR NETWORK (JARING-JARING MOLEKUL)
+           ------------------------------------------------------------------------ */
+        const molCanvas = document.getElementById("molecular-canvas");
+        const molCtx = molCanvas.getContext("2d");
+
+        let molEnabled = true;
+        let molAnimId = null;
+        let viewW = window.innerWidth;
+        let viewH = window.innerHeight;
+        let molecules = [];
+        let ripples = [];
+
+        const pointer = {
+            x: null,
+            y: null,
+            active: false,
+            radius: 175
+        };
+
+        const DARK_NODE_COLORS = [
+            { r: 99, g: 102, b: 241 },  // Indigo
+            { r: 6, g: 182, b: 212 },   // Cyan
+            { r: 139, g: 92, b: 246 }   // Violet
+        ];
+
+        const LIGHT_NODE_COLORS = [
+            { r: 79, g: 70, b: 229 },   // Deep Indigo
+            { r: 8, g: 145, b: 178 },   // Teal Cyan
+            { r: 100, g: 116, b: 139 }  // Slate
+        ];
+
+        function isLightTheme() {
+            return htmlEl.getAttribute("data-theme") === "light";
+        }
+
+        function createMolecules() {
+            // Scale node count smoothly based on viewport area for 60fps performance
+            const count = Math.max(36, Math.min(95, Math.floor((viewW * viewH) / 14500)));
+            molecules = [];
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 0.25 + Math.random() * 0.45;
+                molecules.push({
+                    x: Math.random() * viewW,
+                    y: Math.random() * viewH,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    baseVx: Math.cos(angle) * speed,
+                    baseVy: Math.sin(angle) * speed,
+                    radius: 1.6 + Math.random() * 2.2,
+                    colorIdx: i % 3,
+                    pulsePhase: Math.random() * Math.PI * 2
+                });
+            }
+        }
+
+        function resizeMolecularCanvas() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            viewW = window.innerWidth;
+            viewH = window.innerHeight;
+            molCanvas.width = Math.floor(viewW * dpr);
+            molCanvas.height = Math.floor(viewH * dpr);
+            molCanvas.style.width = viewW + "px";
+            molCanvas.style.height = viewH + "px";
+            molCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            createMolecules();
+        }
+
+        function emitMolecularRipple(x, y) {
+            if (!molEnabled) return;
+            ripples.push({
+                x: x,
+                y: y,
+                radius: 8,
+                maxRadius: 210,
+                alpha: 0.55
+            });
+
+            // Gently push nearby molecules outward in a fluid burst
+            for (let i = 0; i < molecules.length; i++) {
+                const m = molecules[i];
+                const dx = m.x - x;
+                const dy = m.y - y;
+                const dist = Math.hypot(dx, dy);
+                if (dist > 0.1 && dist < 200) {
+                    const force = ((200 - dist) / 200) * 3.4;
+                    m.vx += (dx / dist) * force;
+                    m.vy += (dy / dist) * force;
+                }
+            }
+        }
+
+        function renderMolecularFrame() {
+            if (!molEnabled) return;
+
+            molCtx.clearRect(0, 0, viewW, viewH);
+
+            const light = isLightTheme();
+            const palette = light ? LIGHT_NODE_COLORS : DARK_NODE_COLORS;
+            const linkDist = viewW < 768 ? 115 : 142;
+            const linkDistSq = linkDist * linkDist;
+            const pointerRadiusSq = pointer.radius * pointer.radius;
+
+            // 1. Update molecule positions & apply gentle magnetic swirl toward cursor
+            for (let i = 0; i < molecules.length; i++) {
+                const m = molecules[i];
+                m.pulsePhase += 0.025;
+
+                if (pointer.active && pointer.x !== null) {
+                    const dx = pointer.x - m.x;
+                    const dy = pointer.y - m.y;
+                    const distSq = dx * dx + dy * dy;
+
+                    if (distSq > 16 && distSq < pointerRadiusSq) {
+                        const dist = Math.sqrt(distSq);
+                        const pull = ((pointer.radius - dist) / pointer.radius) * 0.045;
+                        // Subtle radial pull + slight tangential swirl for an alive molecular feel
+                        const nx = dx / dist;
+                        const ny = dy / dist;
+                        m.vx += nx * pull - ny * pull * 0.32;
+                        m.vy += ny * pull + nx * pull * 0.32;
+                    }
+                }
+
+                // Smoothly relax velocity back toward gentle base drift
+                m.vx += (m.baseVx - m.vx) * 0.022;
+                m.vy += (m.baseVy - m.vy) * 0.022;
+
+                m.x += m.vx;
+                m.y += m.vy;
+
+                // Soft edge bounce
+                if (m.x < 0) {
+                    m.x = 0;
+                    m.vx *= -1;
+                    m.baseVx *= -1;
+                } else if (m.x > viewW) {
+                    m.x = viewW;
+                    m.vx *= -1;
+                    m.baseVx *= -1;
+                }
+
+                if (m.y < 0) {
+                    m.y = 0;
+                    m.vy *= -1;
+                    m.baseVy *= -1;
+                } else if (m.y > viewH) {
+                    m.y = viewH;
+                    m.vy *= -1;
+                    m.baseVy *= -1;
+                }
+            }
+
+            // 2. Draw translucent molecular bond lines between nearby nodes
+            molCtx.lineWidth = 1;
+            for (let i = 0; i < molecules.length; i++) {
+                const a = molecules[i];
+                for (let j = i + 1; j < molecules.length; j++) {
+                    const b = molecules[j];
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    const distSq = dx * dx + dy * dy;
+
+                    if (distSq < linkDistSq) {
+                        const ratio = 1 - Math.sqrt(distSq) / linkDist;
+                        const alpha = ratio * (light ? 0.2 : 0.28);
+                        const c = palette[a.colorIdx];
+                        molCtx.strokeStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha.toFixed(3)})`;
+                        molCtx.beginPath();
+                        molCtx.moveTo(a.x, a.y);
+                        molCtx.lineTo(b.x, b.y);
+                        molCtx.stroke();
+                    }
+                }
+            }
+
+            // 3. Draw glowing web connections from mouse/touch cursor to nearby nodes
+            if (pointer.active && pointer.x !== null) {
+                const threadColor = light ? "79, 70, 229" : "6, 182, 212";
+                molCtx.lineWidth = 1.25;
+
+                for (let i = 0; i < molecules.length; i++) {
+                    const m = molecules[i];
+                    const dx = pointer.x - m.x;
+                    const dy = pointer.y - m.y;
+                    const distSq = dx * dx + dy * dy;
+
+                    if (distSq < pointerRadiusSq) {
+                        const ratio = 1 - Math.sqrt(distSq) / pointer.radius;
+                        const alpha = ratio * (light ? 0.42 : 0.62);
+                        molCtx.strokeStyle = `rgba(${threadColor}, ${alpha.toFixed(3)})`;
+                        molCtx.beginPath();
+                        molCtx.moveTo(pointer.x, pointer.y);
+                        molCtx.lineTo(m.x, m.y);
+                        molCtx.stroke();
+                    }
+                }
+
+                // Subtle glowing cursor node
+                const cursorGrad = molCtx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 14);
+                cursorGrad.addColorStop(0, light ? "rgba(79, 70, 229, 0.55)" : "rgba(6, 182, 212, 0.72)");
+                cursorGrad.addColorStop(1, "rgba(6, 182, 212, 0)");
+                molCtx.fillStyle = cursorGrad;
+                molCtx.beginPath();
+                molCtx.arc(pointer.x, pointer.y, 14, 0, Math.PI * 2);
+                molCtx.fill();
+            }
+
+            // 4. Draw floating molecular nodes with soft radial glow
+            for (let i = 0; i < molecules.length; i++) {
+                const m = molecules[i];
+                const c = palette[m.colorIdx];
+                const glowRadius = m.radius * (3.1 + Math.sin(m.pulsePhase) * 0.45);
+
+                const grad = molCtx.createRadialGradient(m.x, m.y, 0, m.x, m.y, glowRadius);
+                grad.addColorStop(0, `rgba(${c.r}, ${c.g}, ${c.b}, ${light ? 0.42 : 0.6})`);
+                grad.addColorStop(1, `rgba(${c.r}, ${c.g}, ${c.b}, 0)`);
+                molCtx.fillStyle = grad;
+                molCtx.beginPath();
+                molCtx.arc(m.x, m.y, glowRadius, 0, Math.PI * 2);
+                molCtx.fill();
+
+                molCtx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${light ? 0.78 : 0.92})`;
+                molCtx.beginPath();
+                molCtx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+                molCtx.fill();
+            }
+
+            // 5. Render expanding click ripples
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                const rp = ripples[i];
+                rp.radius += 5.2;
+                rp.alpha *= 0.93;
+
+                if (rp.alpha < 0.02 || rp.radius > rp.maxRadius) {
+                    ripples.splice(i, 1);
+                    continue;
+                }
+
+                molCtx.strokeStyle = light
+                    ? `rgba(79, 70, 229, ${rp.alpha.toFixed(3)})`
+                    : `rgba(6, 182, 212, ${rp.alpha.toFixed(3)})`;
+                molCtx.lineWidth = 1.5;
+                molCtx.beginPath();
+                molCtx.arc(rp.x, rp.y, rp.radius, 0, Math.PI * 2);
+                molCtx.stroke();
+            }
+
+            molAnimId = requestAnimationFrame(renderMolecularFrame);
+        }
+
+        function toggleMolecularWeb() {
+            molEnabled = !molEnabled;
+            molCanvas.classList.toggle("molecular-hidden", !molEnabled);
+            if (molEnabled) {
+                if (!molAnimId) renderMolecularFrame();
+                showToast("Molecular Web enabled");
+            } else {
+                if (molAnimId) {
+                    cancelAnimationFrame(molAnimId);
+                    molAnimId = null;
+                }
+                molCtx.clearRect(0, 0, viewW, viewH);
+                showToast("Molecular Web hidden");
+            }
+        }
+
+        // Mouse & Touch listeners for Molecular Network
+        window.addEventListener("mousemove", (e) => {
+            pointer.x = e.clientX;
+            pointer.y = e.clientY;
+            pointer.active = true;
+        }, { passive: true });
+
+        window.addEventListener("mouseout", (e) => {
+            if (!e.relatedTarget) pointer.active = false;
+        });
+
+        window.addEventListener("click", (e) => {
+            // Emit ripple cleanly without interfering with modal buttons
+            if (!e.target.closest(".modal-box")) {
+                emitMolecularRipple(e.clientX, e.clientY);
+            }
+        });
+
+        window.addEventListener("touchmove", (e) => {
+            if (e.touches && e.touches.length > 0) {
+                pointer.x = e.touches[0].clientX;
+                pointer.y = e.touches[0].clientY;
+                pointer.active = true;
+            }
+        }, { passive: true });
+
+        window.addEventListener("touchend", () => {
+            pointer.active = false;
+        }, { passive: true });
+
+        let molResizeTimer = null;
+        window.addEventListener("resize", () => {
+            clearTimeout(molResizeTimer);
+            molResizeTimer = setTimeout(resizeMolecularCanvas, 160);
+        });
+
+        // Initialize Molecular Network
+        resizeMolecularCanvas();
+        renderMolecularFrame();
     })();
     </script>
 </body>
